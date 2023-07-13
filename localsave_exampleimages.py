@@ -3,31 +3,45 @@ import pandas as pd
 import requests
 from pathlib import Path
 
-##
-    #  You'll need things_concepts.tsv in the C:/users/$USER/documents/Github/nmatchv
-    #  folder before you get started.
-##
+# Get user Documents directory
+documents_dir = os.path.join(os.path.expanduser('~'), 'Documents')
 
-# Save in github clone directory for nmatchv for current user
-documents_dir = os.path.join(os.path.expanduser('~'), 'Documents') 
+# Set save directory 
 save_dir = os.path.join(documents_dir, 'github/nmatchcv')
+
+# Create save directory if doesn't exist
 if not os.path.exists(save_dir):
-    os.makedirs(save_dir)
+    os.makedirs(save_dir) 
+
+# Download TSV file
+tsv_url = 'https://osf.io/download/xtafs'
+tsv_path = os.path.join(save_dir, 'things_concepts.tsv')
+
+
+# Set working directory 
 os.chdir(save_dir)
 
-# Read in tsv w/ image urls + unique IDs
-df = pd.read_csv('things_concepts.tsv', sep='\t')
+# Download TSV file w/ image URLs and unique IDs in it
+response = requests.get(tsv_url, stream=True)
+with open(tsv_path, 'wb') as f:
+    for chunk in response.iter_content(chunk_size=1024):
+        if chunk: 
+            f.write(chunk)
+response.raise_for_status()
 
-# Iterate through rows of tsv, saving images in subfolders w/ unique ID names
+
+# Read downloaded TSV
+df = pd.read_csv(tsv_path, sep='\t')
+
 for index, row in df.iterrows():
     url = row['Example image']
     unique_id = row['uniqueID']
-
-    # Create subfolder for each image class
+    
+    # Create subfolder
     folder = Path('example_images') / unique_id
     folder.mkdir(parents=True, exist_ok=True)
 
-    # Download image...since only 1 is expected, we'll just name it img1.jpeg directly
+    # Download image
     response = requests.get(url)
     image_path = folder / 'img1.jpeg'
     with open(image_path, 'wb') as f:
