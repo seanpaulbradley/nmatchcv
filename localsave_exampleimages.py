@@ -3,6 +3,11 @@ import pandas as pd
 import requests
 from pathlib import Path
 
+##
+    #  You'll need things_concepts.tsv in the C:/users/$USER/documents/Github/nmatchv
+    #  folder before you get started.
+##
+
 # Save in github clone directory for nmatchv for current user
 documents_dir = os.path.join(os.path.expanduser('~'), 'Documents') 
 save_dir = os.path.join(documents_dir, 'github/nmatchcv')
