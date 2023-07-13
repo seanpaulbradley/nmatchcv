@@ -34,7 +34,7 @@ response.raise_for_status()
 df = pd.read_csv(tsv_path, sep='\t')
 
 for index, row in df.iterrows():
-    url = row['Example image']
+    url = row['Example image'] + '.jpeg'
     unique_id = row['uniqueID']
     
     # Create subfolder
